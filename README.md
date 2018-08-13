@@ -23,7 +23,7 @@ Advanced Admin Search will allow you to easily searching into admin panel.
 5. Custom Post Types
 
 == PREMIUM FEATURES (Coming soon) ==
-* Post Meta Searching.
+* Post Meta Searching
 
 == SUBMITTING PATCHES ==
 

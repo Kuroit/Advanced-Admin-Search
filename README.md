@@ -27,7 +27,7 @@ Advanced Admin Search will allow you to easily searching into admin panel.
 
 == SUBMITTING PATCHES ==
 
-Found a bug? or want to contribute in our plugin? We would love that! Check out <a href="https://github.com/simplydesign/event-alley" target="_blank">Official repo for Event Alley on Github.</a>
+Found a bug? or want to contribute in our plugin? We would love that! Check out <a href="https://github.com/Kuroit/Advanced-Admin-Search" target="_blank">Official repo for Advanced Admin Search on Github.</a>
 
 == Installation ==
 

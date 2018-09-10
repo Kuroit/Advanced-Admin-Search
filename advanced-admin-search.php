@@ -13,7 +13,7 @@
 	*
 	* Advanced Admin Search is a wordpress plugin which adds extra searching feature into admin bar.
 	*
-	**/
+	***/
 class aask_advancedAdminSearch{
 
 function __construct() {

@@ -105,7 +105,9 @@ a.search_result {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+/*
+	AMAR
+*/
 @media screen and (max-width: 600px) {
 	.sf-m {
 		padding-top: 50px;

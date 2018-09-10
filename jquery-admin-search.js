@@ -56,38 +56,77 @@ text = text.toLowerCase();
 
 function desktopSearch() { 
 jQuery(document).ready(function($) {
-	jQuery('#post_search_box').keyup(function() {
+	
+	var search_dropdown={};
+	search_dropdown.list=function() {
 	jQuery( ".search_list" ).html('');
-
+	
 	var data = {
 	    'action': 'search_result',
+	    'beforeSend': function(){
+    	jQuery('.ajax-loader').css("visibility", "visible");
+  		},  
 	    'security': advanced_admin_search.ajax_nonce,
-	    'post_search': jQuery('#post_search_box').val()
+	    'post_search': jQuery('#post_search_box').val(),
 	};
+		
 	    // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
 			adminMenuSearch(jQuery('#post_search_box').val());
 			jQuery( ".search_list" ).append(response);			
-	    });
+		    jQuery('.ajax-loader').css("visibility", "hidden");
+		   
+			$(document).ready(function(){
+		        // Show hide popover
+		        $(".post_search_box").click(function(){
+		            $(this).find(".search_list").slideToggle("fast");
+		        });
+		    });
+		    $(document).on("click", function(event){
+		        var $trigger = $(".post_search_box");
+		        if($trigger !== event.target && !$trigger.has(event.target).length){
+		            $(".search_list").slideUp("fast");
+		        }            
+		    });
+ 	    });	   
+	}
+	
+	jQuery('#post_search_box').keypress(function(e) {
+	if(e.key === "Enter") search_dropdown.list();
 	});
+	
+	$('#submit').click(search_dropdown.list);
 });
 }
 
 function mobileSearch() { 
 jQuery(document).ready(function($) {
-	jQuery('#search_fields').keyup(function() {
+
+	var search_dropdown={};
+	search_dropdown.list=function() {
 	jQuery( ".mobile_search_list" ).html('');
 	var data = {
 	    'action': 'search_result',
+	    'beforeSend': function(){
+    	jQuery('.ajax-loading').css("visibility", "visible");
+  		},
 	    'security': advanced_admin_search.ajax_nonce,
-	    'post_search': jQuery('#search_fields').val()
+	    'post_search': jQuery('#mobile_search_fields').val()
 	};
 	    // points to admin-ajax.php
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
-			adminMenuMobileSearch(jQuery('#search_fields').val());
+			adminMenuMobileSearch(jQuery('#mobile_search_fields').val());
 			jQuery( ".mobile_search_list" ).append(response);
+			jQuery('.ajax-loading').css("visibility", "hidden");
 	    });
+	}
+	
+	jQuery('#mobile_search_fields').keypress(function(e) {
+	if(e.key === "Enter") search_dropdown.list();
 	});
+	
+	$('#submit').click(search_dropdown.list);
+	
 });
 }
 

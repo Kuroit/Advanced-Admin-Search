@@ -13,8 +13,8 @@
 	*
 	* Advanced Admin Search is a wordpress plugin which adds extra searching feature into admin bar.
 	*
-	***/
-class aask_advancedAdminSearch{
+	**/
+class AASK_advancedAdminSearch{
 
 function __construct() {
 
@@ -33,6 +33,7 @@ function __construct() {
 
 function adminJavascript() {
 	wp_enqueue_style( 'advaced_admin_search_style',  plugin_dir_url( __FILE__ ) . 'css/style.css' );
+	wp_enqueue_style( 'advaced_admin_search_fa_icons', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
 	wp_enqueue_script('advaced_admin_search_script' , plugin_dir_url( __FILE__ ) . 'jquery-admin-search.js' );
 
     $params = array(
@@ -60,7 +61,7 @@ $wp_admin_bar->add_menu(array(
 }
 
 function displayInput() {
-    echo '<div class="sf-m"><input type="text" placeholder="Search Database" id="search_fields" autocomplete="off" style="line-height:1em; display:none;"/><ul class="mobile_search_list"></ul></div>';
+    echo '<div class="sf-m"><div id="search_fields" style="display:none;"><input type="text" placeholder="Search Database" id="mobile_search_fields" autocomplete="off" style="line-height:1em;"/><label for="submit"><i class="fa fa-search" aria-hidden="true"></i></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"></div><div class="ajax-loading"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="mobile_search_list"></ul></div>';
 }
 
 function desktopSearchJavascript() { 
@@ -165,11 +166,11 @@ function searchAction() {
 	}
 	else
 	{
-		echo "Invalid Request";
+		echo "Refine Your Search";
 	}
   wp_die(); // this is required to terminate immediately and return a proper response
 }
 
 }
-new aask_advancedAdminSearch();
+new AASK_advancedAdminSearch();
 ?>

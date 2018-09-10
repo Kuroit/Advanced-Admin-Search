@@ -104,7 +104,9 @@ a.search_result {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+/*
+	AMAR 
+*/
 @media screen and (max-width: 600px) {
 	.sf-m {
 		padding-top: 50px;
@@ -174,7 +176,7 @@ a.search_result {
 	 	display: none !important;
 	 }
 	 input#post_search_box {
-	    width: 100%;
+	    max-width: 100%;
 	    text-indent: 10px;
 	}
 }

@@ -45,7 +45,7 @@
 .search_list li a.count_post, .search_list li a.count_post .result-count, .mobile_search_list li a.count_post, .mobile_search_list li a.count_post .result-count{
 	font-weight: bold !important;
 }
-.search_result {
+.search_result, .none_result {
 	width: 250px !important;
 	word-wrap: break-word;
 }
@@ -101,7 +101,6 @@ a.search_result {
 }
 .search_result {
 	white-space: nowrap;
-    width: 400px !important;
     overflow: hidden;
     text-overflow: ellipsis;
 }

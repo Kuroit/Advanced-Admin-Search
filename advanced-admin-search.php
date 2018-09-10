@@ -29,6 +29,7 @@ function __construct() {
 
         // Hook to add javascript.
         add_action( 'admin_enqueue_scripts', array( $this, "adminJavascript" ) );
+        add_action( 'wp_enqueue_scripts', array( $this, "adminJavascript" ) );
 }
 
 function adminJavascript() {
@@ -53,7 +54,7 @@ global $wp_admin_bar;
 $wp_admin_bar->add_menu(array(
     'id' => 'search_form',
     'parent' => 'top-secondary',
-    'title' => '<ul class="post_search_box" style="display:none;">
+    'title' => '<ul class="post_search_box">
     	<li class="advance_search_box"><span class="dashicons dashicons-search" onclick="displayInputBox()"></span><div class="sf-d"><input name="autocomplete" type="text" placeholder="Search Database" id="post_search_box" autocomplete="off" style="height:20px;margin:5px 0;"/><label for="submit"><i class="fa fa-search" aria-hidden="true"></i></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"><div class="ajax-loader"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="search_list"></ul></div></li>
     </ul>'
 ));
@@ -155,12 +156,17 @@ function searchAction() {
 			);
 			$countQueryPost = count($queryPost->posts);
 			
+			$total = $countUser + $countQueryPost;
 			if ($countQueryPost > 10)
 			{
 				echo "<li class='count_result'><a class='count_post media_list' href='#'>'".$post_search."' search has ";
-				$total = $countUser + $countQueryPost;
 				echo "<span class='result-count'>".$total."</span>";
 				echo " results.</a></li>";
+			}
+
+			if ($total == 0)
+			{
+				echo "<li class='count_result'><a class='count_post none_result media_list' href='#'>".$total." result found.</a></li>";
 			}
 		}
 	}

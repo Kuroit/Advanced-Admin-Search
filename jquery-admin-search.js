@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
 	var data = {
 	    'action': 'search_result',
 	    'beforeSend': function(){
-    	jQuery('.ajax-loader').css("visibility", "visible");
+    	jQuery('.ajax-loader').css("visibility", "visible").css("display", "block");
   		},  
 	    'security': advanced_admin_search.ajax_nonce,
 	    'post_search': jQuery('#post_search_box').val(),
@@ -74,7 +74,7 @@ jQuery(document).ready(function($) {
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
 			adminMenuSearch(jQuery('#post_search_box').val());
 			jQuery( ".search_list" ).append(response);			
-		    jQuery('.ajax-loader').css("visibility", "hidden");
+		    jQuery('.ajax-loader').css("visibility", "hidden").css("display", "none");
 		   
 			$(document).ready(function(){
 		        // Show hide popover
@@ -101,14 +101,14 @@ jQuery(document).ready(function($) {
 
 function mobileSearch() { 
 jQuery(document).ready(function($) {
-
+//	jQuery('#search_fields').keyup(function() {
 	var search_dropdown={};
 	search_dropdown.list=function() {
 	jQuery( ".mobile_search_list" ).html('');
 	var data = {
 	    'action': 'search_result',
 	    'beforeSend': function(){
-    	jQuery('.ajax-loading').css("visibility", "visible");
+    	jQuery('.ajax-loading').css("visibility", "visible").css("display", "block");
   		},
 	    'security': advanced_admin_search.ajax_nonce,
 	    'post_search': jQuery('#mobile_search_fields').val()
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
 			adminMenuMobileSearch(jQuery('#mobile_search_fields').val());
 			jQuery( ".mobile_search_list" ).append(response);
-			jQuery('.ajax-loading').css("visibility", "hidden");
+			jQuery('.ajax-loading').css("visibility", "hidden").css("display", "none");
 	    });
 	}
 	

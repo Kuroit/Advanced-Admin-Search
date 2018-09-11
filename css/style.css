@@ -122,7 +122,7 @@ a.search_result {
 }
 #wp-admin-bar-search_form:hover label > i {
 	color: #ffffff !important;
-}
+} 
 @media screen and (max-width: 600px) {
 	.sf-m {
 		padding-top: 50px;

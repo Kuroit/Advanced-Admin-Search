@@ -157,16 +157,15 @@ function searchAction() {
 			$countQueryPost = count($queryPost->posts);
 			
 			$total = $countUser + $countQueryPost;
-			if ($countQueryPost > 10)
+			if ($total == 0)
+			{
+				echo "<li class='count_result'><a class='count_post media_list' href='#'><span class='none_result' style='display:none;'>".$total."</span> Result not Found. Please Refine Your Search</a></li>";
+			}
+			else if ($total > 10)
 			{
 				echo "<li class='count_result'><a class='count_post media_list' href='#'>'".$post_search."' search has ";
 				echo "<span class='result-count'>".$total."</span>";
 				echo " results.</a></li>";
-			}
-
-			if ($total == 0)
-			{
-				echo "<li class='count_result'><a class='count_post none_result media_list' href='#'>".$total." result found.</a></li>";
 			}
 		}
 	}

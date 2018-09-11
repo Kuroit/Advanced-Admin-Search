@@ -19,7 +19,7 @@ text = text.toLowerCase();
   });
   
   var currentCount = jQuery('.result-count').text();
-
+  
   var countMenu = jQuery(".search_list").children().length;
   
   currentCount = currentCount + countMenu;
@@ -73,19 +73,30 @@ jQuery(document).ready(function($) {
 	    // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
 			adminMenuSearch(jQuery('#post_search_box').val());
-			jQuery( ".search_list" ).append(response);			
-		    jQuery('.ajax-loader').css("visibility", "hidden").css("display", "none");
+			jQuery( ".search_list" ).append(response);
+			jQuery('.ajax-loader').css("visibility", "hidden").css("display", "none");
+			
+			var noneResult = jQuery('.none_result').text();
+			var currentCount = jQuery('.result-count').text();
+  			var countMenu = jQuery(".search_list").children().length;
+  			
+  			if (noneResult == 0) {
+  				noneResult = noneResult + countMenu - 1;
+  				if (noneResult) {
+					jQuery('.none_result').parent().css('display', 'none');
+				}
+			}
+			if (currentCount != '') {
+				currentCount = currentCount + countMenu;
+  				jQuery('.result-count').html(currentCount);
+			}
 		   
-			$(document).ready(function(){
-		        // Show hide popover
-		        $(".post_search_box").click(function(){
-		            $(this).find(".search_list").slideToggle("fast");
-		        });
-		    });
 		    $(document).on("click", function(event){
 		        var $trigger = $(".post_search_box");
 		        if($trigger !== event.target && !$trigger.has(event.target).length){
-		            $(".search_list").slideUp("fast");
+		           // $(".search_list").slideUp("fast");
+		            $( ".search_list" ).html('');
+		            $( "input#post_search_box" ).val('');
 		        }            
 		    });
  	    });	   

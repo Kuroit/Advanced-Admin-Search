@@ -129,6 +129,14 @@ jQuery(document).ready(function($) {
 			adminMenuMobileSearch(jQuery('#mobile_search_fields').val());
 			jQuery( ".mobile_search_list" ).append(response);
 			jQuery('.ajax-loading').css("visibility", "hidden").css("display", "none");
+			
+			jQuery(document).on("click", function(event){
+		        var $trigger = jQuery(".sf-m");
+		        if($trigger !== event.target && !$trigger.has(event.target).length){
+		            jQuery( ".mobile_search_list" ).html('');
+		            jQuery( "input#mobile_search_fields" ).val('');
+		        }            
+		    });
 	    });
 	}
 	

@@ -123,7 +123,7 @@ a.search_result {
 #wp-admin-bar-search_form:hover label > i {
 	color: #ffffff !important;
 } 
-.ajax-loader img.img-responsive {
+.ajax-loader img.img-responsive, .ajax-loading img {
     display: block;
     margin: 0 auto !important;
     padding: 10px !important;
@@ -131,6 +131,9 @@ a.search_result {
 }
 a.count_post.media_list {
     min-width: 280px;
+}
+.ajax-loading {
+	background-color: #ffffff;
 }
 @media screen and (max-width: 600px) {
 	.sf-m {
@@ -221,4 +224,4 @@ a.count_post.media_list {
 	    text-indent: 10px;
 	}
 }
- 
+ 	

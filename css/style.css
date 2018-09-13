@@ -186,6 +186,22 @@ a.search_result {
 	    width: auto !important;
 	    display: block;
 	}
+	#search_fields {
+		position: relative;
+	}
+	#search_fields label {
+		background: #0077A4;
+		display: inline-block;
+		position: absolute;
+		top: 1px;
+		bottom: 1px;
+		width: 10%;
+		text-align: center;
+		line-height: 40px;
+		color: #ffffff;
+		min-width: 40px;
+		right: 0px;
+	}
 }
 @media screen and (min-width: 783px) {
 	 .dashicons-search, .sf-m {

@@ -24,9 +24,15 @@
     background-color: #0073aa !important;
     color: #ffffff;
 }
-.search_list li a, .mobile_search_list li{
+.search_list li a {
 	height: 40px !important;
 	padding: 5px !important;
+}
+.mobile_search_list li a {
+    height: 40px !important;
+    padding: 5px !important;
+    display: block;
+    box-sizing: content-box;
 }
 .search_list li a .list_status, .mobile_search_list li a .list_status{
 	float: right;
@@ -213,6 +219,7 @@ a.count_post.media_list {
 		color: #ffffff;
 		min-width: 40px;
 		right: 0px;
+		margin-bottom: 0;
 	}
 }
 @media screen and (min-width: 783px) {

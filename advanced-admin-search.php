@@ -3,7 +3,7 @@
    Plugin Name: Advanced Admin Search
    Plugin URI: 
    description: A WordPress plugin which adds extra searching feature into admin bar.
-   Version: 1.0
+   Version: 0.9
    Author: 
    Author URI: 
    License: GPLv2 or later

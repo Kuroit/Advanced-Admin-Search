@@ -22,8 +22,9 @@ Advanced Admin Search will allow you to easily searching into admin panel.
 4. Pages
 5. Custom Post Types
 
-== PREMIUM FEATURES (Coming soon) ==
+== UPCOMING FEATURES ==
 * Post Meta Searching
+* Dedicated page to show more than 10 results
 
 == SUBMITTING PATCHES ==
 

@@ -34,7 +34,6 @@ function __construct() {
 
 function adminJavascript() {
 	wp_enqueue_style( 'advaced_admin_search_style',  plugin_dir_url( __FILE__ ) . 'css/style.css' );
-	wp_enqueue_style( 'advaced_admin_search_fa_icons', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
 	wp_enqueue_script('advaced_admin_search_script' , plugin_dir_url( __FILE__ ) . 'jquery-admin-search.js' );
 
     $params = array(
@@ -55,14 +54,14 @@ $wp_admin_bar->add_menu(array(
     'id' => 'search_form',
     'parent' => 'top-secondary',
     'title' => '<ul class="post_search_box">
-    	<li class="advance_search_box"><span class="dashicons dashicons-search" onclick="displayInputBox()"></span><div class="sf-d"><input name="autocomplete" type="text" placeholder="Search Database" id="post_search_box" autocomplete="off" style="height:20px;margin:5px 0;"/><label for="submit"><i class="fa fa-search" aria-hidden="true"></i></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"><div class="ajax-loader"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="search_list"></ul></div></li>
+    	<li class="advance_search_box"><span class="dashicons dashicons-search" onclick="displayInputBox()"></span><div class="sf-d"><input name="autocomplete" type="text" placeholder="Search Database" id="post_search_box" autocomplete="off" style="height:20px;margin:5px 0;"/><label for="submit"><span class="dashicons dashicons-search" style="display:block !important;"></span></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"><div class="ajax-loader"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="search_list"></ul></div></li>
     </ul>'
 ));
 
 }
 
 function displayInput() {
-    echo '<div class="sf-m"><div id="search_fields" style="display:none;"><input type="text" placeholder="Search Database" id="mobile_search_fields" autocomplete="off" style="line-height:1em;"/><label for="submit"><i class="fa fa-search" aria-hidden="true"></i></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"></div><div class="ajax-loading"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="mobile_search_list"></ul></div>';
+    echo '<div class="sf-m"><div id="search_fields" style="display:none;"><input type="text" placeholder="Search Database" id="mobile_search_fields" autocomplete="off" style="line-height:1em;"/><label for="submit"><span class="dashicons dashicons-search"></span></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"></div><div class="ajax-loading"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="mobile_search_list"></ul></div>';
 }
 
 function desktopSearchJavascript() { 
@@ -74,6 +73,9 @@ function mobileSearchJavascript() {
 }
 
 function searchAction() {
+
+if (isset($_POST['post_search']) && isset($_POST['security']))
+{
 	$post_search = $_POST['post_search'];
 
 	$check = wp_create_nonce('advanced_search_submit');
@@ -86,11 +88,12 @@ function searchAction() {
 			$users = get_users( array( 'search' => "*{$post_search}*", 'fields' => array( 'display_name', 'user_registered', 'id' ) ) );
 			$countUser = 0;
 
+
 			foreach ( $users as $user ) {
 				$url = admin_url( 'user-edit.php?user_id='.$user->id, 'https' ); 
 				$getUser = new WP_User( $user->id );
 				$role = $getUser->roles;
-				$countUser = count($user->display_name);
+				$countUser++;
 				
 				foreach ($role as $value) {
 					echo "<li class='search_rows'><a class='search_result' href='".$url."'><img class='image_thumb' src='".esc_url( get_avatar_url( $user->ID ) )."'>" . $user->display_name . "<p class='list_status'>". $value."</p><p class='list_type'>" . $user->user_registered . "</p></a></li>";
@@ -117,7 +120,7 @@ function searchAction() {
 				    $url = admin_url( 'post.php?post='.$post->ID.'&action=edit', 'https' ); 
 				    $post_type = $post->post_type;
 
-				    print_r("<li><a class='search_result' href='".$url."''>".$post->post_title."<p class='list_status'>". $post->post_status."</p> <p class='list_type'>Type: ".$post->post_type."</p></a></li>");
+				    echo "<li><a class='search_result' href='".$url."''>".$post->post_title."<p class='list_status'>". $post->post_status."</p> <p class='list_type'>Type: ".$post->post_type."</p></a></li>";
 				} 
 			}
 			
@@ -143,7 +146,7 @@ function searchAction() {
 				    $url = admin_url( 'post.php?post='.$mediaPost->ID.'&action=edit', 'https' ); 
 				    $post_type = $mediaPost->post_type;
 
-				    print_r("<li class='search_rows'><a class='search_result' href='".$url."''><img class='image_thumb' src='".$mediaPost->guid."'>".$mediaPost->post_title."<p class='list_type'>".$mediaPost->post_date."</p></a></li>");
+				    echo "<li class='search_rows'><a class='search_result' href='".$url."''><img class='image_thumb' src='".$mediaPost->guid."'>".$mediaPost->post_title."<p class='list_type'>".$mediaPost->post_date."</p></a></li>";
 				} 
 			}
 
@@ -163,7 +166,7 @@ function searchAction() {
 			}
 			else if ($total > 10)
 			{
-				echo "<li class='count_result'><a class='count_post media_list' href='#'>'".$post_search."' search has ";
+				echo "<li class='count_result' onclick='javascript:alert(\'This feature is coming soon.\');'><a class='count_post media_list' href='#'>'".$post_search."' search has ";
 				echo "<span class='result-count'>".$total."</span>";
 				echo " results.</a></li>";
 			}
@@ -171,8 +174,13 @@ function searchAction() {
 	}
 	else
 	{
-		echo "Refine Your Search";
+		echo "Invalid Request";
 	}
+}
+else
+{
+	echo "Refine Your Search";
+}
   wp_die(); // this is required to terminate immediately and return a proper response
 }
 

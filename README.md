@@ -3,8 +3,8 @@ Contributors: kuroit, puneetkay
 Donate link: https://www.kuroit.com
 Tags: advance search, admin search, custom post type search
 Requires at least: 3.9
-Tested up to: 4.9.5
-Stable tag: 4.9.5
+Tested up to: 4.9.8
+Stable tag: 4.9.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,15 +12,18 @@ Advanced Admin Search adds extra searching feature into admin bar.
 
 == Description ==
 
-Advanced Admin Search will allow you to easily searching into admin panel.
+Advanced Admin Search will allow you to easily search WordPress database in admin bar.
 
 == FEATURES ==
 
+Advanced Admin Search allows you to search:
+
 1. Admin Menu
-2. Media Libraries
-3. Posts
-4. Pages
-5. Custom Post Types
+2. Media Library (Attachments)
+3. Users
+4. Posts
+5. Pages
+6. Custom Post Types
 
 == UPCOMING FEATURES ==
 * Post Meta Searching

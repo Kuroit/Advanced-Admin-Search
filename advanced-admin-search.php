@@ -14,25 +14,31 @@
 	* Advanced Admin Search is a wordpress plugin which adds extra searching feature into admin bar.
 	*
 	**/
-class AASK_advancedAdminSearch{
+namespace Kuroit\AdvancedAdminSearch;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+class AASKP_advancedAdminSearch{
 
 function __construct() {
 
 		// Hook to add input box in admin panel for searching.
-        add_action('admin_bar_menu', array( $this, 'SearchBox'));
-        add_action('in_admin_header', array( $this, 'displayInput'));
+        add_action('admin_bar_menu', array( $this, 'AASKP_SearchBox'));
+        add_action('in_admin_header', array( $this, 'AASKP_displayInput'));
 
         // Hooks to get the searching data like admin menu, media labraries, post, pages.
-        add_action( 'admin_bar_menu', array( $this, 'desktopSearchJavascript' ));
-        add_action( 'in_admin_header', array( $this, 'mobileSearchJavascript' ));
-        add_action( 'wp_ajax_search_result', array( $this, 'searchAction' ));
+        add_action( 'admin_bar_menu', array( $this, 'AASKP_desktopSearchJavascript' ));
+        add_action( 'in_admin_header', array( $this, 'AASKP_mobileSearchJavascript' ));
+        add_action( 'wp_ajax_search_result', array( $this, 'AASKP_searchAction' ));
 
         // Hook to add javascript.
-        add_action( 'admin_enqueue_scripts', array( $this, "adminJavascript" ) );
-        add_action( 'wp_enqueue_scripts', array( $this, "adminJavascript" ) );
+        add_action( 'admin_enqueue_scripts', array( $this, "AASKP_adminJavascript" ) );
+        add_action( 'wp_enqueue_scripts', array( $this, "AASKP_adminJavascript" ) );
 }
 
-function adminJavascript() {
+function AASKP_adminJavascript() {
 	wp_enqueue_style( 'advaced_admin_search_style',  plugin_dir_url( __FILE__ ) . 'css/style.css' );
 	wp_enqueue_script('advaced_admin_search_script' , plugin_dir_url( __FILE__ ) . 'jquery-admin-search.js' );
 
@@ -47,40 +53,41 @@ function adminJavascript() {
 
 }
 
-function SearchBox() {
+function AASKP_SearchBox() {
 global $wp_admin_bar;
 
 $wp_admin_bar->add_menu(array(
     'id' => 'search_form',
     'parent' => 'top-secondary',
     'title' => '<ul class="post_search_box">
-    	<li class="advance_search_box"><span class="dashicons dashicons-search" onclick="displayInputBox()"></span><div class="sf-d"><input name="autocomplete" type="text" placeholder="Search Database" id="post_search_box" autocomplete="off" style="height:20px;margin:5px 0;"/><label for="submit"><span class="dashicons dashicons-search" style="display:block !important;"></span></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"><div class="ajax-loader"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="search_list"></ul></div></li>
+    	<li class="advance_search_box"><span class="dashicons dashicons-search" onclick="AASKP_displayInputBox()"></span><div class="sf-d"><input name="autocomplete" type="text" placeholder="Search Database" id="post_search_box" autocomplete="off" style="height:20px;margin:5px 0;"/><label for="submit"><span class="dashicons dashicons-search" style="display:block !important;"></span></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"><div class="ajax-loader"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="search_list"></ul></div></li>
     </ul>'
 ));
 
 }
 
-function displayInput() {
+function AASKP_displayInput() {
     echo '<div class="sf-m"><div id="search_fields" style="display:none;"><input type="text" placeholder="Search Database" id="mobile_search_fields" autocomplete="off" style="line-height:1em;"/><label for="submit"><span class="dashicons dashicons-search"></span></label><input type="submit" id="submit" name="search" value="Search" style="display:none;"></div><div class="ajax-loading"><img src="'.plugin_dir_url( __FILE__ ).'image/loading.gif" class="img-responsive" /></div><ul class="mobile_search_list"></ul></div>';
 }
 
-function desktopSearchJavascript() { 
-	echo '<script type="text/javascript"> desktopSearch(); </script>';
+function AASKP_desktopSearchJavascript() { 
+	echo '<script type="text/javascript"> AASKP_desktopSearch(); </script>';
 }
 
-function mobileSearchJavascript() { 
-	echo '<script type="text/javascript"> mobileSearch(); </script>';
+function AASKP_mobileSearchJavascript() { 
+	echo '<script type="text/javascript"> AASKP_mobileSearch(); </script>';
 }
 
-function searchAction() {
+function AASKP_searchAction() {
 
 if (isset($_POST['post_search']) && isset($_POST['security']))
 {
-	$post_search = $_POST['post_search'];
+	$post_search = sanitize_text_field( $_POST['post_search'] );
+	$security_check = sanitize_text_field( $_POST['security'] );
 
 	$check = wp_create_nonce('advanced_search_submit');
 
-	if($_POST['security'] == $check)
+	if($security_check == $check)
 	{
 		if(!empty($post_search))
 	    {
@@ -88,10 +95,10 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 			$users = get_users( array( 'search' => "*{$post_search}*", 'fields' => array( 'display_name', 'user_registered', 'id' ) ) );
 			$countUser = 0;
 
-
 			foreach ( $users as $user ) {
 				$url = admin_url( 'user-edit.php?user_id='.$user->id, 'https' ); 
-				$getUser = new WP_User( $user->id );
+				
+				$getUser = get_userdata( $user->id );
 				$role = $getUser->roles;
 				$countUser++;
 				
@@ -105,7 +112,7 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 			{
 				$postPerPage = 10 - $countUser;
 				
-				$query = new WP_Query(
+				$posts = get_posts(
 				    array(
 					    's' => $post_search,
 					    'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash'),
@@ -113,7 +120,6 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 				    )
 				);
 
-				$posts = $query->posts;
 				$countPost = count($posts);
 				
 				foreach ($posts as $post) {
@@ -131,7 +137,7 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 			{
 				$mediaPerPage = 10 - $totalPost;
 				
-				$mediaQuery = new WP_Query(
+				$mediaPosts = get_posts(
 				    array(
 					    's' => $post_search,
 					    'post_type' => 'attachment',
@@ -140,8 +146,6 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 				    )
 				);
 
-				$mediaPosts = $mediaQuery->posts;
-				
 				foreach ($mediaPosts as $mediaPost) {
 				    $url = admin_url( 'post.php?post='.$mediaPost->ID.'&action=edit', 'https' ); 
 				    $post_type = $mediaPost->post_type;
@@ -150,14 +154,16 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 				} 
 			}
 
-			$queryPost = new WP_Query(
+			$queryPost = get_posts(
 			    array(
 				    's' => $post_search,
+				    'post_type' =>  'any',
 				    'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
 				    'posts_per_page' => -1
 			    )
 			);
-			$countQueryPost = count($queryPost->posts);
+			
+			$countQueryPost = count($queryPost);
 			
 			$total = $countUser + $countQueryPost;
 			if ($total == 0)
@@ -185,5 +191,5 @@ else
 }
 
 }
-new AASK_advancedAdminSearch();
+new AASKP_advancedAdminSearch();
 ?>

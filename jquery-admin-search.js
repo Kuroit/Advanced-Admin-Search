@@ -1,4 +1,4 @@
-function adminMenuSearch(text) {
+function AASKP_adminMenuSearch(text) {
 text = text.toLowerCase();
 
   jQuery("#adminmenu > li").each(function(){
@@ -26,7 +26,7 @@ text = text.toLowerCase();
   jQuery('.result-count').html(currentCount);
 }
 
-function adminMenuMobileSearch(text) {
+function AASKP_adminMenuMobileSearch(text) {
 text = text.toLowerCase();
 
   jQuery("#adminmenu > li").each(function(){
@@ -54,7 +54,7 @@ text = text.toLowerCase();
   jQuery('.result-count').html(currentCount);
 }
 
-function desktopSearch() { 
+function AASKP_desktopSearch() { 
 jQuery(document).ready(function($) {
 	
 	var search_dropdown={};
@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
 		
 	    // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
-			adminMenuSearch(jQuery('#post_search_box').val());
+			AASKP_adminMenuSearch(jQuery('#post_search_box').val());
 			jQuery( ".search_list" ).append(response);
 			jQuery('.ajax-loader').css("visibility", "hidden").css("display", "none");
 			
@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
 });
 }
 
-function mobileSearch() { 
+function AASKP_mobileSearch() { 
 jQuery(document).ready(function($) {
 //	jQuery('#search_fields').keyup(function() {
 	var search_dropdown={};
@@ -126,7 +126,7 @@ jQuery(document).ready(function($) {
 	};
 	    // points to admin-ajax.php
 		jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
-			adminMenuMobileSearch(jQuery('#mobile_search_fields').val());
+			AASKP_adminMenuMobileSearch(jQuery('#mobile_search_fields').val());
 			jQuery( ".mobile_search_list" ).append(response);
 			jQuery('.ajax-loading').css("visibility", "hidden").css("display", "none");
 			
@@ -149,7 +149,7 @@ jQuery(document).ready(function($) {
 });
 }
 
-function displayInputBox() {
+function AASKP_displayInputBox() {
   var searchField = document.getElementById("search_fields");
 
     if (!searchField.style.display || searchField.style.display === "none")

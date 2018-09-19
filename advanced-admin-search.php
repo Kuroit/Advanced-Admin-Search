@@ -1,11 +1,11 @@
 <?php
    /*
    Plugin Name: Advanced Admin Search
-   Plugin URI: 
+   Plugin URI: https://www.kuroit.com
    description: A WordPress plugin which adds extra searching feature into admin bar.
    Version: 0.9
-   Author: 
-   Author URI: 
+   Author: Kuroit
+   Author URI: https://www.kuroit.com
    License: GPLv2 or later
    License URI: http://www.gnu.org/licenses/gpl-2.0.html
    */
@@ -24,9 +24,15 @@ class AASKP_advancedAdminSearch{
 
 function __construct() {
 
+<<<<<<< HEAD
 		// Hook to add input box in admin panel for searching.
         add_action('admin_bar_menu', array( $this, 'AASKP_SearchBox'));
         add_action('in_admin_header', array( $this, 'AASKP_displayInput'));
+=======
+	// Hook to add input box in admin panel for searching.
+        add_action('admin_bar_menu', array( $this, 'SearchBox'));
+        add_action('in_admin_header', array( $this, 'displayInput'));
+>>>>>>> c60d99dbda118b9ba235437624deb75a9d7e04ac
 
         // Hooks to get the searching data like admin menu, media labraries, post, pages.
         add_action( 'admin_bar_menu', array( $this, 'AASKP_desktopSearchJavascript' ));
@@ -191,5 +197,11 @@ else
 }
 
 }
+<<<<<<< HEAD
 new AASKP_advancedAdminSearch();
 ?>
+=======
+
+new AASK_advancedAdminSearch();
+?>
+>>>>>>> c60d99dbda118b9ba235437624deb75a9d7e04ac

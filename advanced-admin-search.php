@@ -1,11 +1,11 @@
 <?php
    /*
    Plugin Name: Advanced Admin Search
-   Plugin URI: 
+   Plugin URI: https://www.kuroit.com/product/advanced-admin-search
    description: A WordPress plugin which adds extra searching feature into admin bar.
    Version: 0.9
-   Author: 
-   Author URI: 
+   Author: Kuroit
+   Author URI: https://www.kuroit.com
    License: GPLv2 or later
    License URI: http://www.gnu.org/licenses/gpl-2.0.html
    */

@@ -4,7 +4,7 @@ Donate link: https://www.kuroit.com
 Tags: advance search, admin search, custom post type search
 Requires at least: 3.9
 Tested up to: 4.9.8
-Stable tag: 4.9.8
+Stable tag: 0.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,9 @@ Coming soon!
 
 == Changelog ==
 
+= 0.9.1 =
+* Support for custom post types
+* Bug fixes
 = 0.9 =
 * Hello WordPress!
 * Submitted plugin on WordPress

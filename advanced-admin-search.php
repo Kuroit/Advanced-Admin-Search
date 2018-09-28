@@ -3,7 +3,7 @@
    Plugin Name: Advanced Admin Search
    Plugin URI: https://www.kuroit.com/product/advanced-admin-search
    description: A WordPress plugin which adds extra searching feature into admin bar.
-   Version: 0.9
+   Version: 0.9.1
    Author: Kuroit
    Author URI: https://www.kuroit.com
    License: GPLv2 or later
@@ -43,7 +43,7 @@ function AASKP_adminJavascript() {
 	wp_enqueue_script('advaced_admin_search_script' , plugin_dir_url( __FILE__ ) . 'jquery-admin-search.js' );
 
     $params = array(
-	  'ajaxurl' => admin_url('admin-ajax.php', 'https'),
+	  'ajaxurl' => admin_url('admin-ajax.php'),
 	  'ajax_nonce' => wp_create_nonce('advanced_search_submit'),
 	);
 
@@ -91,19 +91,23 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 	{
 		if(!empty($post_search))
 	    {
+
+	    	$post_types = get_post_types(array('public' => true));
+	    	$post_types = array_values($post_types);
+
 			// get the register user.
 			$users = get_users( array( 'search' => "*{$post_search}*", 'fields' => array( 'display_name', 'user_registered', 'id' ) ) );
 			$countUser = 0;
 
 			foreach ( $users as $user ) {
-				$url = admin_url( 'user-edit.php?user_id='.$user->id, 'https' ); 
+				$url = admin_url( 'user-edit.php?user_id='.$user->id ); 
 				
 				$getUser = get_userdata( $user->id );
 				$role = $getUser->roles;
 				$countUser++;
 				
 				foreach ($role as $value) {
-					echo "<li class='search_rows'><a class='search_result' href='".$url."'><img class='image_thumb' src='".esc_url( get_avatar_url( $user->ID ) )."'>" . $user->display_name . "<p class='list_status'>". $value."</p><p class='list_type'>" . $user->user_registered . "</p></a></li>";
+					echo "<li class='search_rows'><a class='search_result' href='".$url."'><img class='image_thumb' src='".esc_url( get_avatar_url( $user->ID ) )."'>" . $user->display_name . "<p class='list_status'>" . $value . "</p><p class='list_type'>" . $user->user_registered . "</p></a></li>";
 				}
 			}
 
@@ -114,16 +118,17 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 				
 				$posts = get_posts(
 				    array(
-					    's' => $post_search,
-					    'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash'),
-					    'posts_per_page' => $postPerPage
+					    's' 				=> $post_search,
+					    'post_status' 		=> array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash'),
+					    'post_type' 		=> 'any',
+					    'posts_per_page' 	=> $postPerPage
 				    )
 				);
 
 				$countPost = count($posts);
 				
 				foreach ($posts as $post) {
-				    $url = admin_url( 'post.php?post='.$post->ID.'&action=edit', 'https' ); 
+				    $url = admin_url( 'post.php?post='.$post->ID.'&action=edit' ); 
 				    $post_type = $post->post_type;
 
 				    echo "<li><a class='search_result' href='".$url."''>".$post->post_title."<p class='list_status'>". $post->post_status."</p> <p class='list_type'>Type: ".$post->post_type."</p></a></li>";
@@ -147,10 +152,11 @@ if (isset($_POST['post_search']) && isset($_POST['security']))
 				);
 
 				foreach ($mediaPosts as $mediaPost) {
-				    $url = admin_url( 'post.php?post='.$mediaPost->ID.'&action=edit', 'https' ); 
+				    $url = admin_url( 'post.php?post='.$mediaPost->ID.'&action=edit' ); 
 				    $post_type = $mediaPost->post_type;
+				    $image_url = wp_get_attachment_image_src($mediaPost->ID);
 
-				    echo "<li class='search_rows'><a class='search_result' href='".$url."''><img class='image_thumb' src='".$mediaPost->guid."'>".$mediaPost->post_title."<p class='list_type'>".$mediaPost->post_date."</p></a></li>";
+				    echo "<li class='search_rows'><a class='search_result' href='".$url."''><img class='image_thumb' src='".$image_url[0]."'>".$mediaPost->post_title."<p class='list_type'>".$mediaPost->post_date."</p></a></li>";
 				} 
 			}
 

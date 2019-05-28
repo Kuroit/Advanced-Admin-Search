@@ -8,7 +8,7 @@
    Author URI: https://www.kuroit.com
    License: GPLv2 or later
    License URI: http://www.gnu.org/licenses/gpl-2.0.html
-   */
+   **/
    /* The Advanced Admin Search Plugin
 	*
 	* Advanced Admin Search is a wordpress plugin which adds extra searching feature into admin bar.

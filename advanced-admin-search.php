@@ -14,6 +14,7 @@
 	* Advanced Admin Search is a wordpress plugin which adds extra searching feature into admin bar.
 	*
 	*/
+	echo 'hello';
 namespace Kuroit\AdvancedAdminSearch;
 
 if ( ! defined( 'ABSPATH' ) ) {

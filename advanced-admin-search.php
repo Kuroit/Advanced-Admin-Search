@@ -19,7 +19,7 @@ namespace Kuroit\AdvancedAdminSearch;
 
 if (!defined('ABSPATH')) {
 
-  die();	// Exit if accessed directly
+  die();	// Exit if accessed directly.
 
 }
 

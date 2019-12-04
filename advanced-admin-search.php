@@ -141,12 +141,16 @@
 				echo "<li class='count_result'><a class='count_post media_list' href='#'><span class='none_result' style='display:none;'>".count($results)."</span> Result not Found. Please Refine Your Search</a></li>";
 			}
 			else{
+				echo "<script> 
+					function alertbox() {
+						alert('Feature is coming soon.');
+					} 
+				</script>";
 				if(count($results)>10)
 				{
 				$results1=array_slice($results,0,10);
 				}
 				else{
-				echo "<script> function alertbox() {alert('Feature is coming soon.');} </script>";
 				$results1=array_merge($results);
 				}
 				foreach ($results1 as $row) {
@@ -265,7 +269,7 @@
 			global $wpdb;
 			$output = array();
 
-			$postMeta = $wpdb->get_results("SELECT * FROM wp_postmeta WHERE meta_key LIKE '%".$post_search."%' OR meta_value LIKE '%".$post_search."%'");
+			$postMeta = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."postmeta WHERE meta_key LIKE '%".$post_search."%' OR meta_value LIKE '%".$post_search."%'");
 
 			foreach ($postMeta as $meta) {
 				$url = admin_url( 'post.php?post='.$meta->post_id.'&action=edit' ); 

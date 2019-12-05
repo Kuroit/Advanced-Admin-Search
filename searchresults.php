@@ -320,7 +320,7 @@ class AASKP_searchResults
 
 
 
-            $postMeta = $wpdb->get_results("SELECT * FROM wp_postmeta WHERE meta_key
+            $postMeta = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."postmeta WHERE meta_key
 
             LIKE '%".$post_search."%' OR meta_value LIKE '%".$post_search."%'");
 

@@ -3,8 +3,8 @@ Contributors: kuroit, puneetkay
 Donate link: https://www.kuroit.com
 Tags: advance search, admin search, custom post type search
 Requires at least: 3.9
-Tested up to: 4.9.8
-Stable tag: 0.9.1
+Tested up to: 5.3
+Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,9 @@ Coming soon!
 
 == Changelog ==
 
+= 1.0 =
+* Javascript bug fix
+* SQL error (prefix) on results fixed
 = 0.9.1 =
 * Support for custom post types
 * Bug fixes

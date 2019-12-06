@@ -340,7 +340,7 @@ class AASKP_searchResults
 
                         'status' =>'PostMeta',
 
-                        'info' =>  $meta->meta_value,
+                        'info' =>  strip_tags($meta->meta_value),
 
 
 
@@ -358,7 +358,7 @@ class AASKP_searchResults
 
                         'status' => $getPost->post_status,
 
-                        'info' => 'Meta Value: '.$meta->meta_value,
+                        'info' => 'Meta Value: '.strip_tags($meta->meta_value),
 
                     );
 

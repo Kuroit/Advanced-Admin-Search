@@ -58,7 +58,7 @@ p.list_type {
     overflow: hidden;
 
     text-overflow: ellipsis;
-    height: 20px !important; 
+    height: 23px !important; 
 
     /*clear: both;*/
 
@@ -542,7 +542,7 @@ ul.search_list {
 
 		text-align: center;
 
-		line-height: 40px;
+		line-height: 41px;
 
 		color: #ffffff;
 

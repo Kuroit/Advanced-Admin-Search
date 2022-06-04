@@ -84,6 +84,8 @@ function AASKP_desktopSearch() { //desktop search and results display
 
             var search=jsonData['search'];
 
+            var myCustomsearch='"'+jsonData['search']+'"';
+
 
 
             if(jsonData['result']=='success'){   
@@ -93,9 +95,7 @@ function AASKP_desktopSearch() { //desktop search and results display
                     jQuery( ".search_list" ).append("<li class='count_result'><a class='count_post media_list' href='#'><span class='none_result' style='display:none;'>"+count+
 
                     "</span> Result not Found. Please Refine Your Search</a></li>");
-
                 }else{  //display the found results 
-
                     $.each(jsonData['data'], function(key, values){
 
                         var status = values['status'];
@@ -160,7 +160,7 @@ function AASKP_desktopSearch() { //desktop search and results display
 
                     });
 
-                    jQuery( ".search_list" ).append("<li class='count_result' onclick='AlertMessage()'><a class='count_post media_list' href='#'>"+search+" search has <span class='result-count'>"+count+"</span> results.</a></li> ");
+                    jQuery( ".search_list" ).append("<li class='count_result' onclick='ASAK_pageView("+myCustomsearch+")'><a class='count_post media_list' href='#'>View all <span class='result-count'>"+count+"</span> search results</a></li> ");
 
                 }
 
@@ -242,9 +242,8 @@ function AASKP_desktopSearch() { //desktop search and results display
 
 
 
-function AlertMessage(){
+function ASAK_pageView(myCustomsearch){
 
-    alert('This feature is coming soon.');
-
+    window.location.href="tools.php?page=advanced-admin-search&keyword="+myCustomsearch;
 }
 

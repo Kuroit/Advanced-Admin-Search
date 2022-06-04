@@ -3,8 +3,8 @@ Contributors: kuroit, puneetkay
 Donate link: https://www.kuroit.com
 Tags: advance search, admin search, custom post type search
 Requires at least: 3.9
-Tested up to: 5.3
-Stable tag: 1.1
+Tested up to: 6.0
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,9 +23,9 @@ Example:
 Not sure where you placed the shortcode for third party gallery or appointment plugin?
 Simply search the shortcode in search field and it will provide you list of posts/pages or anywhere it is placed.
 
-== Search Features ==
+== Bar Search Features ==
 
-Advanced Admin Search allows you to search:
+Advanced Admin Search on WordPress admin bar allows you to search:
 
 1. Admin Menu
 2. Media Library (Attachments)
@@ -36,8 +36,28 @@ Advanced Admin Search allows you to search:
 7. Post Meta
 8. Comments
 
-== UPCOMING FEATURES ==
-* Dedicated page to show more than 10 results
+== Dedicated Full Search Page ==
+
+Dedicated Full Search page of Advanced Admin Search in WordPress admin panel allows you to search:
+
+1. Media Library (Attachments)
+2. Users
+3. Posts (and content for shortcodes, links etc)
+4. Pages (and content for shortcodes, links etc)
+5. Custom Post Types
+6. Post Meta
+7. Comments
+
+You can filter the search by:
+
+1. Keyword (search term)
+2. Post Type
+3. Post Status
+4. Author ID or Username
+5. Meta Filters
+6. Filter by Meta Key
+7. Filter by Meta Value
+8. Filter Meta by Expression (Exact Match, Starting With, Ending With)
 
 == SUBMITTING PATCHES ==
 
@@ -58,6 +78,14 @@ Coming soon!
 
 == Changelog ==
 
+= 1.1.3 =
+* Bug fixes
+= 1.1.2 =
+* Readme file updates
+= 1.1.1 =
+* Bug Fixes
+* Dedicated search page support
+* UI Changes
 = 1.1 =
 * JS bug fix
 * SQL error fix

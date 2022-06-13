@@ -254,8 +254,6 @@ function aaskp_search_page_callback() {
                     $title = $values['title'];
                     $link = $values['link'];
                     
-                    $link='"'.$link.'"';
-                    
                     $info = $values['info'];
                     $types=$values['type'];
                     

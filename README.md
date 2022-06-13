@@ -4,7 +4,7 @@ Donate link: https://www.kuroit.com
 Tags: advance search, admin search, custom post type search
 Requires at least: 3.9
 Tested up to: 6.0
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,8 @@ Coming soon!
 
 == Changelog ==
 
+= 1.1.4 =
+* Security issues fixed
 = 1.1.3 =
 * Bug fixes
 = 1.1.2 =

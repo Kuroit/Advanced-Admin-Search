@@ -3,7 +3,7 @@
  * Plugin Name:       Advanced Admin Search
  * Plugin URI:        https://www.kuroit.com/product/advanced-admin-search
  * Description:       Easily search everything in WordPress admin panel from one single search field.
- * Version:           1.1.3
+ * Version:           1.1.4
  * Author:            Kuroit
  * Author URI:        https://www.kuroit.com
  * License:           GPLv2 or later

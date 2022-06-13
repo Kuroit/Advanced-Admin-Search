@@ -40,7 +40,6 @@ class AASKP_SearchData
         //register and enqueue script
         wp_enqueue_script( 'advanced_admin_desktop_search_script' );
         wp_enqueue_script( 'advanced_admin_mobile_search_script' );
-        
         wp_enqueue_script( 'advanced_admin_page_search_script' );
     }
 }

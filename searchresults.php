@@ -5,28 +5,43 @@ namespace Kuroit\AdvancedAdminSearch;
 class AASKP_searchResults
 {
     protected static $instance = false;
-    public function __construct() // instantiation
-    {
+    public function __construct() {
+        // Init the search results
         add_action('wp_ajax_search_result', array($this, 'AASKP_searchAction'));
     }
-    public function AASKP_searchAction() //retrieve the results 
-    {
+
+    // Ajax search callback function
+    public function AASKP_searchAction() {
+
+        // Start fetching the results
         if (isset($_POST['post_search']) && isset($_POST['security'])) {
+
+            // Get POST data and sanitise it
             $post_search = sanitize_text_field($_POST['post_search']);
             $security_check = sanitize_text_field($_POST['security']);
+
+            // Check nonce first
             $check = wp_create_nonce('advanced_search_submit');
             if ($security_check == $check) {
-                $results = array(); // all results available for search
+
+                // Prep result array 
+                $results = array();
+
                 if (!empty($post_search)) {
+
+                    // Prep filters array
                     $filters=array();
+
+                    // Fetch post types available
                     $post_types = get_post_types(array('public' => true));
                     $post_types = array_values($post_types);
+
                     // get pre search results from hook
                     $pre_filtered_result = apply_filters('aaskp_pre_search', $post_search);
-                    
                     if (is_array($pre_filtered_result)) {
                         $results = array_merge($results, $pre_filtered_result);
                     }
+
                     $results = array_merge(
                         $results, // pre search
                         $this->AASKP_getUsers($post_search,$filters),  // user results
@@ -36,27 +51,29 @@ class AASKP_searchResults
                         $this->AASKP_getPostMeta($post_search,$filters), // post meta
                         $this->AASKP_getComments($post_search,$filters) // comments
                     );
+
                     $post_filtered_result = apply_filters('aaskp_post_search', $post_search);
                     if (is_array($post_filtered_result)) {
                         $results = array_merge($results, $post_filtered_result);
                     }
-                    //results conversion to json 
-                    echo json_encode(array('result'=>'success', 'data'=>$results, 'count'=>count($results), 'search'=>$post_search));
+
+                    _e(json_encode(array('result'=>'success', 'data'=>$results, 'count'=>count($results), 'search'=>$post_search)), "advanced-admin-search");
                 }
                 else {
-                    echo json_encode(array('result'=>'success', 'count'=> count($results)));
+                    _e(json_encode(array('result'=>'success', 'count'=> count($results))), "advanced-admin-search");
                 }
             } else {
-                echo json_encode(array('result'=>'error', 'message'=>'Invalid Request'));
+                _e(json_encode(array('result'=>'error', 'message'=>'Invalid Request')), "advanced-admin-search");
             }
         } else {
-            echo json_encode(array('result'=>'none', 'message'=>'Refine Your Search'));
+            _e(json_encode(array('result'=>'none', 'message'=>'Refine Your Search')), "advanced-admin-search");
         }
         wp_die();
     }
-    public function AASKP_getUsers($post_search,$filters,$flag = false)
-    {
-                
+
+
+    public function AASKP_getUsers($post_search,$filters,$flag = false) {
+
         $output = array();
         if($flag) {
             if(!empty($filters['status'])  || !empty($filters['user']) || !empty($filters['metaKey']) || !empty($filters['metaValue'])) {
@@ -82,14 +99,14 @@ class AASKP_searchResults
         }
         return $output;
     }
-    public function AASKP_getPostsAndPages($post_search,$filters,$flag = false)
-    {
+
+    public function AASKP_getPostsAndPages($post_search,$filters,$flag = false) {
         $output = array();
         $args = array( 
             's'                 => $post_search,
             'post_type'         => 'any',
             'post_status'       => array('publish', 'pending', 'draft',
-            'auto-draft', 'future', 'private', 'trash'),
+                'auto-draft', 'future', 'private', 'trash'),
             'posts_per_page'    => -1
         );
         if($flag) {
@@ -97,18 +114,17 @@ class AASKP_searchResults
                 $args['post_status']=$filters['status'];
             }
             if(!empty($filters['user'])) {
-                if(is_numeric($filters['user'])) {
+                if (is_numeric($filters['user'])) {
                     $args['author'] = $filters['user'];
-                }
-                else {
-                 $args['author_name'] = $filters['user'];
+                } else {
+                    $args['author_name'] = $filters['user'];
                 }
             }
-         
+
             $metaQuery= array();
             if (!empty($filters['metaKey'])) {
                 $metaQuery=array(
-                        'key' => $filters['metaKey']
+                    'key' => $filters['metaKey']
                 );              
             }
             if (!empty($filters['metaValue'])) {
@@ -116,46 +132,46 @@ class AASKP_searchResults
                 $matchType=$filters['matchType'];
                 switch($matchType) {
                     case "starting":
-                        $compare='REGEXP';
-                        $value='^'.$value; 
-                        break;
+                    $compare='REGEXP';
+                    $value='^'.$value; 
+                    break;
                     case "ending":
-                        $compare='REGEXP';
-                        $value=$value.'$';
-                        break;
+                    $compare='REGEXP';
+                    $value=$value.'$';
+                    break;
                     case 0:
                     case "exact":
-                        $compare='=';
+                    $compare='=';
                 }
                 $metaValueQuery=array(
-                            'value' => $value,
-                            'compare' => $compare                 
-                        );
+                    'value' => $value,
+                    'compare' => $compare                 
+                );
                 $metaQuery= array_merge($metaQuery,$metaValueQuery);  
             }
             if(!empty($metaQuery)) {
-        
+
                 $args['meta_query']=array($metaQuery);
             }
         }
         $query = new \WP_Query($args);
-                    
+
         $posts = $query->posts;
         foreach ($posts as $post) {
-                $url = admin_url('post.php?post='.$post->ID.'&action=edit');
-                $post_type = $post->post_type;
-                $output[]=array(
-                    'link'      => $url,
-                    'title'     => $post->post_title,
-                    'status'    => $post->post_status,
-                    'info'      => 'Type: '.$post->post_type,
-                    'type'    => 'Post'
-                );
+            $url = admin_url('post.php?post='.$post->ID.'&action=edit');
+            $post_type = $post->post_type;
+            $output[]=array(
+                'link'      => $url,
+                'title'     => $post->post_title,
+                'status'    => $post->post_status,
+                'info'      => 'Type: '.$post->post_type,
+                'type'    => 'Post'
+            );
         }
         return $output;
     }
-    public function AASKP_getMedia($post_search,$filters,$flag = false)
-    {
+
+    public function AASKP_getMedia($post_search,$filters,$flag = false) {
         $output = array();
         $args=array(
             's'                 => $post_search,
@@ -170,7 +186,7 @@ class AASKP_searchResults
             if(!empty($filters['status'])) {
                 $args['post_status']=$filters['status'];   
             }
-        
+
             if(!empty($filters['user'])) {
                 if(is_numeric($filters['user'])) {
                     $args['author'] = $filters['user'];
@@ -182,58 +198,68 @@ class AASKP_searchResults
         }
         $mediaPosts = get_posts($args);
         foreach ($mediaPosts as $mediaPost) {
-                $url = admin_url('post.php?post='.$mediaPost->ID.'&action=edit');
-                $post_type = $mediaPost->post_type;
-                $image_url = wp_get_attachment_image_src($mediaPost->ID);
-                $image_url_main = $image_url[0];
-                if($image_url_main == false){
-                    $image_url = '';
-                }
-                $output[]=array(
-                    'link' => $url,
-                    'title' => $mediaPost->post_title,
-                    'info' => $mediaPost->post_date,
-                    'image'=> $image_url_main,
-                    'type' => 'Media'
-                );
+            $url = admin_url('post.php?post='.$mediaPost->ID.'&action=edit');
+            $post_type = $mediaPost->post_type;
+            $image_url = wp_get_attachment_image_src($mediaPost->ID);
+            $image_url_main = $image_url[0];
+            if($image_url_main == false){
+                $image_url = '';
+            }
+            $output[]=array(
+                'link' => $url,
+                'title' => $mediaPost->post_title,
+                'info' => $mediaPost->post_date,
+                'image'=> $image_url_main,
+                'type' => 'Media'
+            );
         }
         return $output;
     }
-    public function AASKP_getTaxonomies($post_search,$filters,$flag = false)
-    {
-            $output = array();
-            if($flag) {
-                if(!empty($filters['status']) || !empty($filters['user']) || !empty($filters['metaKey']) || !empty($filters['metaValue'])) {
-                    return $output;
-                }
+
+    public function AASKP_getTaxonomies($post_search,$filters,$flag = false) {
+        $output = array();
+        if($flag) {
+            if(!empty($filters['status']) || !empty($filters['user']) || !empty($filters['metaKey']) || !empty($filters['metaValue'])) {
+                return $output;
             }
-            
-            $taxonomies = get_terms(
-                array('search' => $post_search)
-            );
+        }
+
+        $taxonomies = get_terms(
+            array('search' => $post_search)
+        );
         foreach ($taxonomies as $taxonomy) {
-                $url = admin_url('term.php?taxonomy='.$taxonomy->taxonomy.
+            $url = admin_url('term.php?taxonomy='.$taxonomy->taxonomy.
                 '&tag_ID='.$taxonomy->term_id.'&post_type=post&wp_http_referer
                 =%2Fwp-admin%2Fedit-tags.php%3Ftaxonomy%3Dcategory');
-                $output[]=array(
-                    'link' => $url,
-                    'title' => $taxonomy->name,
-                    'info' => 'Taxonomy: '.$taxonomy->taxonomy,
-                    'type' => 'Taxonomy'
-                );
+            $output[]=array(
+                'link' => $url,
+                'title' => $taxonomy->name,
+                'info' => 'Taxonomy: '.$taxonomy->taxonomy,
+                'type' => 'Taxonomy'
+            );
         }
         return $output;
     }
-    public function AASKP_getPostMeta($post_search,$filters,$flag = false)
-    {
+
+    public function AASKP_getPostMeta($post_search,$filters,$flag = false) {
         $output = array();
         if($flag) {
             if(!empty($filters['user']) || !empty($filters['user']) || !empty($filters['metaKey']) || !empty($filters['metaValue'])) {
                 return $output;
             }
         }
+
         global $wpdb;
-        $postMeta = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."postmeta WHERE meta_key LIKE '%".$post_search."%' OR meta_value LIKE '%".$post_search."%'");
+        $metaTableName = $wpdb->prefix . "postmeta";
+        $queryMeta = $wpdb->prepare(
+            "SELECT * FROM {$metaTableName} WHERE meta_key LIKE %s OR meta_value LIKE %s;",
+            array(
+                '%' . $post_search . '%',
+                '%' . $post_search . '%',
+            )
+        );
+        $postMeta = $wpdb->get_results($queryMeta);
+
         foreach ($postMeta as $meta) {
             $url = admin_url('post.php?post='.$meta->post_id.'&action=edit');
             $getPost = get_post($meta->post_id);
@@ -249,8 +275,7 @@ class AASKP_searchResults
                             'type'    => 'PostMeta'
                         );
                     }
-                }
-                else {
+                } else {
                     if(empty($filters['status'])) {
                         $output[]=array(
                             'link' => $url,
@@ -259,8 +284,7 @@ class AASKP_searchResults
                             'info' => 'Meta Value: '.strip_tags($meta->meta_value),
                             'type' => 'PostMeta'
                         );
-                    }
-                    else {
+                    } else {
                         if(strcmp($getPost->post_status, $filters['status']) == 0) {
                             $output[]=array(
                                 'link' => $url,
@@ -272,21 +296,18 @@ class AASKP_searchResults
                         }  
                     }
                 } 
-            }
-                
-            else {
+            } else {
                 if (strpos($meta->meta_key, $post_search) !== false) {
-                    
-                        $output[]=array(
-                            'link' => $url,
-                            'title' => $getPost->post_title,
-                            'status' =>'PostMeta',
-                            'info' =>  strip_tags($meta->meta_value),
-                            'type' => 'PostMeta'
-                        );
-                } 
-                else {
-                                
+
+                    $output[]=array(
+                        'link' => $url,
+                        'title' => $getPost->post_title,
+                        'status' =>'PostMeta',
+                        'info' =>  strip_tags($meta->meta_value),
+                        'type' => 'PostMeta'
+                    );
+                } else {
+
                     $output[]=array(
                         'link' => $url,
                         'title' => $getPost->post_title,
@@ -299,8 +320,8 @@ class AASKP_searchResults
         }
         return $output;
     }
-    public function AASKP_getComments($post_search,$filters,$flag = false)
-    {
+
+    public function AASKP_getComments($post_search,$filters,$flag = false) {
         $output = array();
         $args=array('search' => $post_search);
         if($flag){
@@ -311,8 +332,7 @@ class AASKP_searchResults
                 $user=$filters['user'];
                 if(is_numeric($user)) {
                     $args['user_id'] = $user;
-                }
-                else {
+                } else {
                     $userData=get_user_by('login', $user);
                     $args['user_id'] = $userData->ID;
                 }
@@ -330,7 +350,8 @@ class AASKP_searchResults
         }
         return $output;
     }
-    public static function getInstance(){
+
+    public static function getInstance() {
         if(self::$instance == false){
             self::$instance = new AASKP_searchResults();
         }

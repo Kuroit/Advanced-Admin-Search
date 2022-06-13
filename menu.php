@@ -294,7 +294,7 @@ function aaskp_search_page_callback() {
                     }
 
                     // Print search row
-                    _e("<tr class=\"search_rows search_rows1\" onclick=\"clickLink('".$link."');\"><td class=\"td_rows\">".$type."</td><td class=\"td_rows\">".$images."</td><td><p class=\"list_title1\">".$title."</p></td><td class=\"td_rows\"><p class=\"list_status1\">".$status."</p></td><td><p class=\"list_type1\">".$info."</p></td></a></tr>", "advanced-admin-search");
+                    _e("<tr class=\"search_rows search_result_rows\" onclick=\"clickLink('".$link."');\"><td class=\"td_rows\">".$type."</td><td class=\"td_rows\">".$images."</td><td><p class=\"list_title1\">".$title."</p></td><td class=\"td_rows\"><p class=\"list_status1\">".$status."</p></td><td><p class=\"list_type1\">".$info."</p></td></a></tr>", "advanced-admin-search");
                 }
 
                 // End table

@@ -464,8 +464,9 @@ ul.search_list3 li {
     width: 40px !important;
     height: 40px !important;
 }
-.search_rows1{
+.search_result_rows{
 	text-align: center;
+	cursor: pointer;
 }
 .list_title1 {
     font-weight: bold !important;

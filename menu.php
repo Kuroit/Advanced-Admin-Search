@@ -1,11 +1,13 @@
 <?php
 use Kuroit\AdvancedAdminSearch\AASKP_searchResults as searchclass;
 
+// Add menu item for the plugin
 add_action('admin_menu', 'aaskp_menu_items');
 function aaskp_menu_items(){
     add_submenu_page('tools.php','Advance Admin Search', 'Advanced Admin Search', 'manage_options', 'advanced-admin-search', 'aaskp_search_page_callback');
 }
 
+// Pre search call to fetch user & roles
 add_filter( 'aaskp_pre_search', 'aaskp_pre_search_callback');
 function aaskp_pre_search_callback($user) {
     $output = array();
@@ -36,6 +38,7 @@ function aaskp_pre_search_callback($user) {
 
 function aaskp_search_page_callback() { 
 
+    // Pick all data from query string and sanitise it
     $selectedKeyword = (isset($_GET['keyword'])) ? sanitize_text_field($_GET['keyword']) : '';
     $selectedFilter = (isset($_GET['select'])) ? sanitize_text_field($_GET['select']) : '';
     $selectedStatus = (isset($_GET['status'])) ? sanitize_text_field($_GET['status']) : '';
@@ -45,8 +48,8 @@ function aaskp_search_page_callback() {
     $selectedMetaVal = (isset($_GET['metaValue'])) ? sanitize_text_field($_GET['metaValue']) : '';
     $selectedMatchType = (isset($_GET['matchType'])) ? sanitize_text_field($_GET['matchType']) : '';
 
+    // Advance search form view - TODO: switch to separate template later on
     ?>
-    <html>
     <div class="advanced-admin-wrapper">
         <label for="post_search_box1"><h2 class="page_title_AASKP">Advanced Admin Search: Full Search</h2></label>
         <form action="" method="GET">
@@ -97,15 +100,18 @@ function aaskp_search_page_callback() {
             </div>
         </form>
     </div>
-        
-    </html>
     <?php
-    //get the keyword
+
+    // Get search data if keyword is available
     if (isset($selectedKeyword)) {
         $postSearch = sanitize_text_field($selectedKeyword);
         
         if (!empty($postSearch)) {
+
+            // Filter keys from search form
             $keys=array('select','status','user','metaKey','metaValue','matchType');
+            
+            // Prep filters data from form
             $filters=array_fill_keys($keys,"");
             if (isset($selectedFilter) && $selectedFilter != ''){
                 $filters['select']=sanitize_text_field($selectedFilter);    
@@ -126,12 +132,12 @@ function aaskp_search_page_callback() {
                 $filters['matchType']=sanitize_text_field($selectedMatchType);  
             }
             
-            //get all results
+            // Get all results
             $results = array();
             $post_types = get_post_types(array('public' => true));
             $post_types = array_values($post_types);
 
-            // get pre search results from hook
+            // Apply local pre-search hook
             if(!empty($filters['user'])){
                 $user=$filters['user'];
                 $pre_filtered_result = apply_filters('aaskp_pre_search', $user);
@@ -141,6 +147,7 @@ function aaskp_search_page_callback() {
                 }
             }
 
+            // Init search and get search based data
             $object = searchclass::getInstance();
             switch($filters['select']) {
                 case "Users":
@@ -191,11 +198,14 @@ function aaskp_search_page_callback() {
                             $object->AASKP_getComments($postSearch,$filters,true) // comments
                         );
             }
-                
+            
+            // Apply local post-search hook 
             $post_filtered_result = apply_filters('aaskp_post_search', $postSearch);
             if (is_array($post_filtered_result)) {
                 $results = array_merge($results, $post_filtered_result);   
             }
+
+            // Start working on pagination
             $numPerPage=10;
             $numPages = ceil(count($results)/$numPerPage);
             if (isset($_GET['offset'])) {
@@ -211,20 +221,28 @@ function aaskp_search_page_callback() {
             }
             $start=($offset-1)*$numPerPage;  
             $end=min(($offset*$numPerPage),count($results));
+
+            // Print total search count
             if(count($results) > 1){
-                echo '<h2 class="search_result_count">Total <span>'.count($results).'</span> Search Results Found</h2>';
+                // More than one result
+                _e('<h2 class="search_result_count">Total <span>'.count($results).'</span> Search Results Found</h2>', 'advanced-admin-search');
             }elseif(count($results) == 0){
-                 echo '<h2 class="search_result_count">Total <span>'.count($results).'</span> Search Result Found.</h2>';
-            }
-            else{
-                echo '<h2 class="search_result_count">Total <span>'.count($results).'</span> Search Result Found</h2>';
+                // No result found
+                _e('<h2 class="search_result_count">No Search Result Found.</h2>', 'advanced-admin-search');
+            }else{
+                // Single result
+                _e('<h2 class="search_result_count">Only <span>'.count($results).'</span> Search Result Found</h2>', 'advanced-admin-search');
             }
             
-            echo "<table class='search_list2 table_fxd' cellpadding='10' border='1'>";
-            if(count($results)==0){ //no results found
-                echo "<tr><td colspan='5' class='result_row'>Please refine your search</td></tr>";
-            }else{  //display the found results 
-                echo "<tr class='search_rows tb-heading'><th class='table_type'>Type</th><th class='table_type1'>Thumbnail</th><th class='table_type2'>Title</th><th class='table_type1'>Status</th><th class='table_type2'>Info</th></tr>";
+            // Start printing search results table
+            echo "<table class=\"search_list2 table_fxd\" cellpadding=\"10\" border=\"1\">";
+            if(count($results)==0){ 
+                // No results found - refine it!
+                echo "<tr><td colspan=\"5\" class=\"result_row\">Please refine your search</td></tr>";
+            }else{  
+                // Display the found results 
+                echo "<tr class=\"search_rows tb-heading\"><th class=\"table_type\">Type</th><th class=\"table_type1\">Thumbnail</th><th class=\"table_type2\">Title</th><th class=\"table_type1\">Status</th><th class=\"table_type2\">Info</th></tr>";
+
                 for($i=$start;$i<$end;$i++){
                     $values=$results[$i];
                     if(array_key_exists("status",$values)){
@@ -244,7 +262,7 @@ function aaskp_search_page_callback() {
                     $image = '';
                     if(array_key_exists("image",$values)){
                         $image = $values['image'];
-                        $images = "<img class='image_thumb1' src='".$image."'>";
+                        $images = __("<img class='image_thumb1' src='".$image."'>", "advanced-admin-search");
                     }else{
                         $images="[NO IMAGE]";
                     }
@@ -258,29 +276,35 @@ function aaskp_search_page_callback() {
                     
                     switch($types) {
                         case "User":
-                            $type = "<label class='color' style='background: #dc3545;'>".$types."</label>";
+                            $type = __("<label class='color' style='background: #dc3545;'>".$types."</label>", "advanced-admin-search");
                         break;
                     case "Post":
-                            $type = "<label class='color' style='background: #03254d;'>".$types."</label>";
+                            $type = __("<label class='color' style='background: #03254d;'>".$types."</label>", "advanced-admin-search");
                         break;
                     case "Media":
-                            $type = "<label class='color' style='background: #dec610;'>".$types."</label>";
+                            $type = __("<label class='color' style='background: #dec610;'>".$types."</label>", "advanced-admin-search");
                         break;
                     case "Taxonomy":
-                            $type = "<label class='color' style='background: #32a852;'>".$types."</label>";
+                            $type = __("<label class='color' style='background: #32a852;'>".$types."</label>", "advanced-admin-search");
                         break;
                     case "PostMeta":
-                            $type = "<label class='color' style='background: #c7550e;'>".$types."</label>";
+                            $type = __("<label class='color' style='background: #c7550e;'>".$types."</label>", "advanced-admin-search");
                         break;
                     case "Comment":
-                            $type = "<label class='color' style='background: #6c757d;'>".$types."</label>";
+                            $type = __("<label class='color' style='background: #6c757d;'>".$types."</label>", "advanced-admin-search");
                         break;
                     }
-                    echo "<tr class='search_rows search_rows1' onclick='clickLink(".$link.")'><td class='td_rows'>".$type."</td><td class='td_rows'>".$images."</td><td><p class='list_title1'>".$title."</p></td><td class='td_rows'><p class='list_status1'>".$status."</p></td><td><p class='list_type1'>".$info."</p></td></a></tr>";
+
+                    // Print search row
+                    _e("<tr class=\"search_rows search_rows1\" onclick=\"clickLink('".$link."');\"><td class=\"td_rows\">".$type."</td><td class=\"td_rows\">".$images."</td><td><p class=\"list_title1\">".$title."</p></td><td class=\"td_rows\"><p class=\"list_status1\">".$status."</p></td><td><p class=\"list_type1\">".$info."</p></td></a></tr>", "advanced-admin-search");
                 }
+
+                // End table
                 echo "</table>";
+
+                // Prep url for pagination
                 $adminUrl= get_admin_url();
-                $url=$adminUrl."tools.php?page=advanced-admin-search&keyword=".$postSearch."&select=".$filters['select']."&status=".$filters['status']."&user=".$filters['user']."&metaKey=".$filters['metaKey']."&metaValue=".$filters['metaValue']."&matchType=".$filters['matchType'];
+                $url= __($adminUrl."tools.php?page=advanced-admin-search&keyword=".$postSearch."&select=".$filters['select']."&status=".$filters['status']."&user=".$filters['user']."&metaKey=".$filters['metaKey']."&metaValue=".$filters['metaValue']."&matchType=".$filters['matchType'], "advanced-admin-search");
                 
                 //pagination for results found
                 createPagination($url,$offset,$numPages);
@@ -295,75 +319,78 @@ function createPagination($url,$offset,$numPages)
     $nextPage = $offset + 1;
     $secondLast=$numPages-1;
     if($numPages>1) {
-        echo "<div class='center'>
-                <div class='pagination'>";
+
+        echo "<div class=\"center\"><div class=\"pagination\">";
         if($offset==1) {
-            echo "<a class='isDisabled'>PREV</a>";
+            echo "<a class=\"isDisabled\">PREV</a>";
+        } else {
+            _e("<a href='".$url."&offset=".$previousPage."' class=\"btn-color\">PREV</a>", "advanced-admin-search"); 
         }
-        else {
-            echo "<a href='".$url."&offset=".$previousPage."' class='btn-color'>PREV</a>"; 
-        }
-        //results less than 10
+
+        // Results less than 10
         if ($numPages <= 10){  
             for ($counter = 1; $counter <= $numPages; $counter++){
                 if ($counter == $offset) {
-                    echo "<a href='".$url."&offset=".$counter."' class='active'>".$counter."</a>"; 
+                    _e("<a href=\"".$url."&offset=".$counter."\" class=\"active\">".$counter."</a>", "advanced-admin-search"); 
                  }else{
-                    echo "<a href='".$url."&offset=".$counter."'>".$counter."</a>";
+                    _e("<a href=\"".$url."&offset=".$counter."\">".$counter."</a>", "advanced-admin-search");
                  }
             }
         }
-        //results greater than 10
+
+        // Results greater than 10
         elseif ($numPages > 10){
-            if($offset <= 4) {
+            if($offset <= 4){
+
                 for ($counter = 1; $counter < 8; $counter++){ 
                     if ($counter == $offset) {
-                        echo "<a href='".$url."&offset=".$counter."' class='active'>".$counter."</a>"; 
+                        _e("<a href=\"".$url."&offset=".$counter."\" class=\"active\">".$counter."</a>", "advanced-admin-search");
                     }else{
-                        echo "<a href='".$url."&offset=".$counter."'>".$counter."</a>";
+                        _e("<a href=\"".$url."&offset=".$counter."\">".$counter."</a>", "advanced-admin-search");
                     }
                 }
-                echo "<a>...</a>";
-                echo "<a href='".$url."&offset=".$secondLast."'>".$secondLast."</a>";
-                echo "<a href='".$url."&offset=".$numPages."'>".$numPages."</a>";
-            }
-            elseif($offset > 4 && $offset < ($numPages - 4)) { 
-                echo "<a href='".$url."&offset=1'>1</a>";
-                echo "<a href='".$url."&offset=2'>2</a>";
-                echo "<a>...</a>";
+                _e("<a>...</a>", "advanced-admin-search");
+                _e("<a href=\"".$url."&offset=".$secondLast."\">".$secondLast."</a>", "advanced-admin-search");
+                _e("<a href=\"".$url."&offset=".$numPages."\">".$numPages."</a>", "advanced-admin-search");
+
+            } elseif ($offset > 4 && $offset < ($numPages - 4)) { 
+
+                _e("<a href=\"".$url."&offset=1\">1</a>", "advanced-admin-search");
+                _e("<a href=\"".$url."&offset=2\">2</a>", "advanced-admin-search");
+                _e("<a>...</a>", "advanced-admin-search");
                 for ($counter = ($offset - 2);$counter <= ($offset + 2);$counter++) { 
                     if ($counter == $offset) {
-                        echo "<a href='".$url."&offset=".$counter."' class='active'>".$counter."</a>"; 
+                        _e("<a href=\"".$url."&offset=".$counter."\" class=\"active\">".$counter."</a>", "advanced-admin-search");
                     }else{
-                        echo "<a href='".$url."&offset=".$counter."'>".$counter."</a>"; 
+                        _e("<a href=\"".$url."&offset=".$counter."\">".$counter."</a>", "advanced-admin-search");
                     }                  
                 }
-                echo "<a>...</a>";
-                echo "<a href='".$url."&offset=".$secondLast."'>".$secondLast."</a>";
-                echo "<a href='".$url."&offset=".$numPages."'>".$numPages."</a>";
-            }
-            else {
-                echo "<a href='".$url."&offset=1'>1</a>";
-                echo "<a href='".$url."&offset=2'>2</a>";
-                echo "<a>...</a>";
+                _e("<a>...</a>", "advanced-admin-search");
+                _e("<a href=\"".$url."&offset=".$secondLast."\">".$secondLast."</a>", "advanced-admin-search");
+                _e("<a href=\"".$url."&offset=".$numPages."\">".$numPages."</a>", "advanced-admin-search");
+
+            } else {
+                _e("<a href=\"".$url."&offset=1\">1</a>", "advanced-admin-search");
+                _e("<a href=\"".$url."&offset=2\">2</a>", "advanced-admin-search");
+                _e("<a>...</a>", "advanced-admin-search");
                 for ($counter=($numPages - 6);$counter <=$numPages;$counter++
                      ) {
                     if ($counter == $offset) {
-                        echo "<a href='".$url."&offset=".$counter."' class='active'>".$counter."</a>";  
+                        _e("<a href=\"".$url."&offset=".$counter."\" class=\"active\">".$counter."</a>", "advanced-admin-search");
                     }else{
-                        echo "<a href='".$url."&offset=".$counter."'>".$counter."</a>";
+                        _e("<a href=\"".$url."&offset=".$counter."\">".$counter."</a>", "advanced-admin-search");
                     }                   
                 }
             }
         }
+
         if($offset==$numPages) {
-            echo "<a class='isDisabled'>NEXT</a>";
+            echo "<a class=\"isDisabled\">NEXT</a>";
         }
         else {
-            echo "<a href='".$url."&offset=".$nextPage."' class='btn-color'>NEXT</a>";
+            _e("<a href=\"".$url."&offset=".$nextPage."\" class=\"btn-color\">NEXT</a>", "advanced-admin-search");
         }
-        echo "</div>
-                </div>";
+        echo "</div></div>";
     }
 }
 ?>

@@ -239,6 +239,9 @@ function aaskp_search_page_callback() {
             if(count($results)==0){ 
                 // No results found - refine it!
                 echo "<tr><td colspan=\"5\" class=\"result_row\">Please refine your search</td></tr>";
+
+                // End table
+                echo "</table>";
             }else{  
                 // Display the found results 
                 echo "<tr class=\"search_rows tb-heading\"><th class=\"table_type\">Type</th><th class=\"table_type1\">Thumbnail</th><th class=\"table_type2\">Title</th><th class=\"table_type1\">Status</th><th class=\"table_type2\">Info</th></tr>";

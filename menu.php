@@ -56,7 +56,7 @@ function aaskp_search_page_callback() {
             <p>Search Filters:</p>
             <input type="hidden" class="input_page" name="page" value="advanced-admin-search">
             
-            <input name="keyword" class="input_search" type="text" value="<?php if(isset($selectedKeyword) && $selectedKeyword!='') _e($selectedKeyword, 'advanced-admin-search'); ?>" placeholder="Search in database" id="post_search_box1" autocomplete="off" required />
+            <input name="keyword" class="input_search" type="text" value="<?php if(isset($selectedKeyword) && $selectedKeyword!='') esc_attr($selectedKeyword); ?>" placeholder="Search in database" id="post_search_box1" autocomplete="off" required />
             
             <select name="select" class="select1">
                 <option value="All" <?php if(isset($selectedFilter) && $selectedFilter=='All') echo 'selected="selected"';?>>All</option>
@@ -80,15 +80,15 @@ function aaskp_search_page_callback() {
                 <option value="inherit" <?php if(isset($selectedStatus) && $selectedStatus=='inherit') echo 'selected="selected"';?>>Inherit</option>
             </select>
 
-            <input type="text" input class="input_page input_search" name="user" placeholder="Filter by author ID or username" value="<?php if(isset($selectedUser) && $selectedUser!='') _e($selectedUser, 'advanced-admin-search'); ?>"/></br>
+            <input type="text" input class="input_page input_search" name="user" placeholder="Filter by author ID or username" value="<?php if(isset($selectedUser) && $selectedUser!='') esc_attr($selectedUser); ?>"/></br>
 
             <div class="advanced_search">
                 <p>Advanced Admin search meta filters:</p>
                 <p><span><input type="checkbox" id="open_advance_search" /><label for="open_advance_search" class="highlighted_adv_label"><i>Check this box to enable meta search</i></label></span></p>
 
-                <input type="text" input class="input_key input_search" name="metaKey" placeholder="Filter by meta key" value="<?php if(isset($selectedMetaKey) && $selectedMetaKey!='') _e($selectedMetaKey, 'advanced-admin-search'); ?>" disabled="" title="Check the box above to enable meta search fields" />
+                <input type="text" input class="input_key input_search" name="metaKey" placeholder="Filter by meta key" value="<?php if(isset($selectedMetaKey) && $selectedMetaKey!='') esc_attr($selectedMetaKey); ?>" disabled="" title="Check the box above to enable meta search fields" />
 
-                <input type="text" input class="input_value input_search" name="metaValue" placeholder="Filter by meta value" value="<?php if(isset($selectedMetaVal) && $selectedMetaVal!='') _e($selectedMetaVal, 'advanced-admin-search'); ?>" disabled="" title="Check the box above to enable meta search fields" />
+                <input type="text" input class="input_value input_search" name="metaValue" placeholder="Filter by meta value" value="<?php if(isset($selectedMetaVal) && $selectedMetaVal!='') esc_attr($selectedMetaVal); ?>" disabled="" title="Check the box above to enable meta search fields" />
 
                 <select name="matchType" input class="select1" disabled="" title="Check the box above to enable meta search fields">
                     <option value="exact" <?php if(isset($selectedMatchType) && $selectedMatchType=='exact') echo 'selected="selected"';?>>Exact</option>
